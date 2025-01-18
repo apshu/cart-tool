@@ -108,6 +108,7 @@ def cmd_opt_list(output_format: str = 'default', **kwargs):
 
 
 command_map = {
+    # info
     'info': cmd_info,
     # setblob
     'setblob': cmd_set_blob,
@@ -154,6 +155,9 @@ def main():
     sub_cmd = subparsers.add_parser('info', help='Get <CAR file> information based on header')
     sub_cmd.add_argument('cart_file', type=argparse.FileType('rb'), metavar='<CAR file>', help='Input file. The file is not modified.')
 
+    sub_cmd = subparsers.add_parser('list', help='List available CART mode identifiers')
+    sub_cmd.add_argument('-f', '--format', type=str, default='HUMAN' help='Define output format. Default is human readable format. Specify -f JSON for JSON format.')
+
     sub_cmd = subparsers.add_parser('setblob', aliases=('set', 'addblob', 'add'), help='Set  <CAR file> blob to bytes from <BLOB file>')
     sub_cmd.add_argument('cart_file', type=pathlib.Path, metavar='<CAR file>', help='Input/output file. File content rewritten. No backups created.')
     sub_cmd.add_argument('blob_file', type=argparse.FileType('rb'), metavar='<BLOB file>', help='Input file. The file is not modified.')
@@ -173,22 +177,17 @@ def main():
     sub_cmd.add_argument('cart_file', type=pathlib.Path, metavar='<CAR file>', help='Input/output file. File content rewritten. No backups created.')
     sub_cmd.add_argument('cart_type', type=param_to_cart_type, help='New type identifier. To list all known types, run the command with --list')
     sub_cmd.add_argument('-a', '--adjust-size', action='store_true', help='If the new CART type is bigger or smaller, the ROM content will be extended (0xFF) or truncated.')
-    sub_cmd.add_argument('-l', '--list', type=str, action='store', nargs='?', const='default', default=argparse.SUPPRESS, help='List available CART type identifiers and exit. Specify -l JSON for JSON format.')
 
     sub_cmd = subparsers.add_parser('rom2car', aliases=('convert', 'convertrom'), help='Convert RAW <ROM file> to <CAR file>')
     sub_cmd.add_argument('rom_file', type=argparse.FileType('rb'), metavar='<ROM file>', help='Source (cart-type guess is based only on the size)')
     sub_cmd.add_argument('cart_file', type=pathlib.Path, metavar='<CAR file>', help='Generated file. If file exists, it will be overwritten without backup.')
     sub_cmd.add_argument('-t', '--cart-type', default=ATCartridgeInfo.Mode_Unknown, type=param_to_cart_type, help='If omitted, the cart-type will be guessed')
-    sub_cmd.add_argument('-l', '--list', type=str, action='store', nargs='?', const='default', default=argparse.SUPPRESS, help='List available CART type identifiers and exit. Specify -l JSON for JSON format.')
 
     args = parser.parse_args()
-    if 'list' in args:
-        cmd_opt_list(args.list.casefold())
+    if args.command in command_map:
+        command_map[args.command](**vars(args))
     else:
-        if args.command in command_map:
-            command_map[args.command](**vars(args))
-        else:
-            raise RuntimeError(f'Unable to execute command "{args.command}". Internal error.')
+        raise RuntimeError(f'Unable to execute command "{args.command}". Internal error.')
 
 
 if __name__ == '__main__':
