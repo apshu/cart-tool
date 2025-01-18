@@ -119,6 +119,7 @@ def _save(im, fp, filename, save_all=False):
 def _save_raw_bin(im, fp, filename, save_all=False):
     def_x = im.info['def_x'] * 1 if 'def_x' in im.info else 0
     def_y = im.info['def_y'] * 1 if 'def_y' in im.info else 0
+    fp.write(b'LCD1')
     fp.write(struct.pack('<4HB', def_x, def_y, im.size[0], im.size[1], 1 if im.mode == '1' else 2))
     im.load()
     if not hasattr(im, 'encoderconfig'):
