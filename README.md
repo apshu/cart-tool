@@ -21,9 +21,10 @@ python -m pip install Pillow
 ## Usage of [`cart-tool.py`](cart-tool.py)
 
 ```
-python cart-tool.py [-h] {info,setblob,set,addblob,add,delblob,del,rm,erase,getblob,get,extract,getrom,rom,settype,rom2car,convert,convertrom} ...
+python cart-tool.py [-h] {info,list,setblob,set,addblob,add,delblob,del,rm,erase,getblob,get,extract,getrom,rom,settype,rom2car,convert,convertrom} ...
 ```
 &emsp;[`info`](#subcommand-info-parameters): Get `<CAR file>` information based on header.  
+&emsp;[`list`](#subcommand-list-parameters): List available CART mode identifiers.  
 &emsp;[`setblob`](#subcommand-setblob-parameters) (aliases: `set`, `addblob`, `add`): Set `<CAR file>` blob to bytes from `<BLOB file>`.  
 &emsp;[`delblob`](#subcommand-delblob-parameters) (aliases: `del`, `rm`, `erase`): Eliminate BLOB from `<CAR file>`.  
 &emsp;[`getblob`](#subcommand-getblob-parameters) (aliases: `get`, `extract`): Extract BLOB from `<CAR file>` to `<BLOB file>`.  
@@ -38,6 +39,13 @@ python cart-tool.py info [-h] <CAR file>
 ```
 - `info`: Get information about a cartridge file.
     - `<CAR file>`: Input file. The file is not modified.
+
+#### Subcommand *list* Parameters
+```
+python cart-tool.py list [-h] [-f FORMAT]
+```
+- `list`: List available CART mode identifiers.
+    - `-f, --format`: Define output format. Default is human readable format. Specify -f JSON for JSON format.
 
 #### Subcommand *setblob* Parameters
 ```
@@ -95,6 +103,16 @@ python cart-tool.py rom2car [-h] <ROM file> <CAR file> [-t cart_type]
     Get information about a cartridge file.
     ```sh
     python cart-tool.py info mycartridge.car
+    ```
+- [`list`](#subcommand-list-parameters) example:
+
+    List available CART mode identifiers.
+    ```sh
+    python cart-tool.py list
+    ```
+    List available CART mode identifiers in JSON format.
+    ```sh
+    python cart-tool.py list -f JSON
     ```
 - [`setblob`](#subcommand-setblob-parameters) example:
 
@@ -167,11 +185,11 @@ python image2oled.py [-h] [-i INFILE] [-x DEFX] [-y DEFY] [-n VARNAME] [--invers
   ```
 - Convert an image with default X and Y positions.
   ```sh
-  python image2oled.py -i input.png -x 10 -y 20 -o output.lcd
+  python image2oled.py -i input.bmp -x 10 -y 20 -o output.lcd
   ```
 - Convert an image without dithering and resizing.
   ```sh
-  python image2oled.py -i input.png --no_dither --no_resize -o output.lcd
+  python image2oled.py -i input.jpg --no_dither --no_resize -o output.lcd
   ```
 
 ## License
