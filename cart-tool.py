@@ -98,7 +98,7 @@ def cmd_rom2car(rom_file, cart_file, cart_type: ATCartridgeInfo, **kwargs):
         raise ValueError('ROM file length is 0')
 
 
-def cmd_opt_list(output_format: str = 'default', **kwargs):
+def cmd_opt_list(output_format: str = 'HUMAN', **kwargs):
     real_cartlist: ATCartridgeInfo = sorted(filter(lambda x: not x.is_virtual, ATCartridgeInfo))
     if output_format == 'json':
         print(json.dumps(separators=(',', ':'), obj={item.name: {'mode': item.value, 'size': item.mCartSize, 'description': item.mCartDescription} for item in real_cartlist}))
@@ -110,6 +110,8 @@ def cmd_opt_list(output_format: str = 'default', **kwargs):
 command_map = {
     # info
     'info': cmd_info,
+    # list
+    'list': cmd_opt_list,
     # setblob
     'setblob': cmd_set_blob,
     'set': cmd_set_blob,
@@ -156,7 +158,7 @@ def main():
     sub_cmd.add_argument('cart_file', type=argparse.FileType('rb'), metavar='<CAR file>', help='Input file. The file is not modified.')
 
     sub_cmd = subparsers.add_parser('list', help='List available CART mode identifiers')
-    sub_cmd.add_argument('-f', '--format', type=str, default='HUMAN' help='Define output format. Default is human readable format. Specify -f JSON for JSON format.')
+    sub_cmd.add_argument('-f', '--format', type=str, default='HUMAN', help='Define output format. Default is human readable format. Specify -f JSON for JSON format.')
 
     sub_cmd = subparsers.add_parser('setblob', aliases=('set', 'addblob', 'add'), help='Set  <CAR file> blob to bytes from <BLOB file>')
     sub_cmd.add_argument('cart_file', type=pathlib.Path, metavar='<CAR file>', help='Input/output file. File content rewritten. No backups created.')
