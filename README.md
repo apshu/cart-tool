@@ -5,14 +5,18 @@ This project provides tools and utilities for working with Atari 8-bit cartridge
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#usage)
-  - [cart-tool.py](#cart-toolpy) command-line tool for manipulating Atari 8-bit cartridge files.
-  - [image2oled.py](#image2oledpy)
+- [cart-tool.py](#usage-of-cart-toolpy) command-line tool for manipulating Atari 8-bit cartridge files.
+- [image2oled.py](#usage-of-image2oledpy) command-line tool to generate MONO LCD raster images
 - [License](#license)
 
 ## Installation
 
 To use the tools provided in this project, you must have Python 3.10 or later installed.
+
+For [`image2oled.py`](#usage-of-image2oledpy), the Pillow library is needed. You can install it using pip:
+```sh
+python -m pip install Pillow
+```
 
 ## Usage of [`cart-tool.py`](cart-tool.py)
 
@@ -86,53 +90,88 @@ python cart-tool.py rom2car [-h] <ROM file> <CAR file> [-t cart_type]
 
 ### Command invocation examples
 
-- `info`: Get information about a cartridge file.
+- [`info`](#subcommand-info-parameters) example:
+
+    Get information about a cartridge file.
+    ```sh
+    python cart-tool.py info mycartridge.car
+    ```
+- [`setblob`](#subcommand-setblob-parameters) example:
+
+    Set the blob data in a cartridge file.
+    ```sh
+    python cart-tool.py setblob mycartridge.car myblob.bin
+    ```
+- [`delblob`](#subcommand-delblob-parameters) example:
+
+    Remove the blob data from a cartridge file.
+    ```sh
+    python cart-tool.py delblob mycartridge.car
+    ```
+- [`getblob`](#subcommand-getblob-parameters) example:
+
+    Extract the blob data from a cartridge file.
+    ```sh
+    python cart-tool.py getblob mycartridge.car extractedblob.bin
+    ```
+- [`getrom`](#subcommand-getrom-parameters) example:
+
+    Extract the ROM data from a cartridge file.
+    ```sh
+    python cart-tool.py getrom mycartridge.car extractedrom.bin
+    ```
+- [`settype`](#subcommand-settype-parameters) examples:
+
+    Set the cartridge type in a cartridge file.
+    ```sh
+    python cart-tool.py settype mycartridge.car 12 --adjust-size
+    ```
+    Invoke command with hexa number (other Python recognized number formats also accepted)
+    ```sh
+    python cart-tool.py settype mycartridge.car 0x0C --adjust-size
+    ```
+    Command invocation with text based cart mode
+    ```sh
+    python cart-tool.py settype mycartridge.car Mode_XEGS_32K --adjust-size
+    ```
+- [`rom2car`](#subcommand-rom2car-parameters) examples:
+
+    Convert a raw ROM file to a type 12 cartridge file.
+    ```sh
+    python cart-tool.py rom2car myrom.bin mycartridge.car --cart-type 12
+    ```
+    Command invocation with text based cart mode
+    ```sh
+    python cart-tool.py rom2car myrom.bin newXEGScart.car -t Mode_XEGS_64K
+    ```
+
+## Usage of [`image2oled.py`](image2oled.py)
+
+```
+python image2oled.py [-h] [-i INFILE] [-x DEFX] [-y DEFY] [-n VARNAME] [--inverse] [--no_dither] [--no_resize] [-o OUTFILE]
+```
+- `-i, --infile`: Input file (default: `-` = stdin).
+- `-x, --defX`: Default image X position (default: `0`).
+- `-y, --defY`: Default image Y position (default: `0`).
+- `-n, --varname`: Output C code variable name (default: `RAW_LCD_image`). Omitted for BINARY format.
+- `--inverse`: Generate output in inverse.
+- `--no_dither`: Convert non B&W image with 50% luminescence cut.
+- `--no_resize`: Disable resizing of images to fit OLED display 128×64.
+- `-o, --outfile`: Output file (default: `-` = stdout).
+
+### Command invocation examples
+
+- Convert an image to MONO LCD raster format and save it.
   ```sh
-  python cart-tool.py info mycartridge.car
+  python image2oled.py -i input.png -o output.lcd
   ```
-- `setblob`: Set the blob data in a cartridge file.
+- Convert an image with default X and Y positions.
   ```sh
-  python cart-tool.py setblob mycartridge.car myblob.bin
+  python image2oled.py -i input.png -x 10 -y 20 -o output.lcd
   ```
-- `delblob`: Remove the blob data from a cartridge file.
+- Convert an image without dithering and resizing.
   ```sh
-  python cart-tool.py delblob mycartridge.car
-  ```
-- `getblob`: Extract the blob data from a cartridge file.
-  ```sh
-  python cart-tool.py getblob mycartridge.car extractedblob.bin
-  ```
-- `getrom`: Extract the ROM data from a cartridge file.
-  ```sh
-  python cart-tool.py getrom mycartridge.car extractedrom.bin
-  ```
-- `settype`: Set the cartridge type in a cartridge file.
-  ```sh
-  python cart-tool.py settype mycartridge.car 12 --adjust-size
-  ```
-  Ivoke command with hexa number (other Python recognized number formats also accepted)
-  ```sh
-  python cart-tool.py settype mycartridge.car 0x0C --adjust-size
-  ```
-  Command invocation with text based cart mode
-  ```sh
-  python cart-tool.py settype mycartridge.car Mode_XEGS_32K --adjust-size
-  ```
-- `rom2car`: List all cartridge modes in human readble format
-  ```sh
-  python cart-tool.py rom2car -l
-  ```
-  List all cartridge modes in JSON format
-  ```sh
-  python cart-tool.py rom2car -l JSON
-  ```
-  Convert a raw ROM file to a type 12 cartridge file.
-  ```sh
-  python cart-tool.py rom2car myrom.bin mycartridge.car --cart-type 12
-  ```
-  Command invocation with text based cart mode
-  ```sh
-  python cart-tool.py rom2car myrom.bin newXEGScart.car -t Mode_XEGS_64K
+  python image2oled.py -i input.png --no_dither --no_resize -o output.lcd
   ```
 
 ## License
