@@ -82,7 +82,7 @@ def cmd_rom2car(rom_file, cart_file, cart_type: ATCartridgeInfo, **kwargs):
     if rom_length:
         if cart_type.is_virtual:
             # Autodetect needed
-            print(f'Autodetecting:\n ROM size {filesize.naturalsize(rom_length, True)},\n all matching options: {', '.join(map(lambda x: x.name, filter(lambda x: x.mCartSize == rom_length, ATCartridgeInfo)))}')
+            print(f'Autodetecting:\n ROM size {filesize.naturalsize(rom_length, True)},\n all matching options: {", ".join(map(lambda x: x.name, filter(lambda x: x.mCartSize == rom_length, ATCartridgeInfo)))}')
             preferred_cart_modes = [1,2,12,13,14,23,24,25]
             if not (cart_type := tuple(filter(lambda x: ATCartridgeInfo(x).mCartSize == rom_length, preferred_cart_modes))):
                 cart_type = tuple(filter(lambda x: x.mCartSize == rom_length, ATCartridgeInfo))
